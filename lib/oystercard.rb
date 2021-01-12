@@ -19,6 +19,7 @@ class Oystercard
   end
 
   def touch_in
+    fail "Insufficient funds" if balance < 1
     self.in_use = true
   end
 
