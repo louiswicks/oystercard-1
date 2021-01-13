@@ -1,3 +1,4 @@
+require_relative 'station'
 class OysterCard
 
   MAXIMUM_BALANCE = 90
