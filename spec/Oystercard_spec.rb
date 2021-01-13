@@ -3,6 +3,8 @@ require "oystercard"
 describe OysterCard do
 
   let(:entry_station) {double :station}
+  let(:exit_station) {double :station}
+  let(:journey) {{:entry_station => entry_station, :exit_station => exit_station}}
 
   describe "#balance" do
 
@@ -41,7 +43,7 @@ describe OysterCard do
     it "decreases balance by MINIMUM_BALANCE" do
       subject.top_up(10)
       subject.touch_in(entry_station)
-      expect { subject.touch_out }.to change { subject.balance }.by(-OysterCard::MINIMUM_BALANCE)
+      expect { subject.touch_out(exit_station) }.to change { subject.balance }.by(-OysterCard::MINIMUM_BALANCE)
     end
   end
 
@@ -72,7 +74,7 @@ describe OysterCard do
     it "sets in_journey? to be false" do
       subject.top_up(OysterCard::MINIMUM_BALANCE)
       subject.touch_in(entry_station)
-      subject.touch_out
+      subject.touch_out(exit_station)
       expect(subject).not_to be_in_journey
     end
   end
@@ -84,6 +86,21 @@ describe OysterCard do
     it "is initially not in a journey" do
       expect(subject).not_to be_in_journey
     end
+  end
+
+  describe "#journeys" do
+
+    it "checks if journeys is empty" do
+      expect(subject.journeys).to be_empty
+    end
+
+    it "records journeys" do
+      subject.top_up(10)
+      subject.touch_in(entry_station)
+      subject.touch_out(exit_station)
+      expect(subject.journeys).to include journey
+    end
+
   end
 
 end
