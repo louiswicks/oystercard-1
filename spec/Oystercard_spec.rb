@@ -2,6 +2,8 @@ require "oystercard"
 
 describe OysterCard do
 
+  let(:entry_station) {double :station}
+
   describe "#balance" do
 
     it "has balance of 0 on initializing" do
@@ -38,10 +40,9 @@ describe OysterCard do
 
     it "decreases balance by MINIMUM_BALANCE" do
       subject.top_up(10)
-      subject.touch_in
+      subject.touch_in(entry_station)
       expect { subject.touch_out }.to change { subject.balance }.by(-OysterCard::MINIMUM_BALANCE)
     end
-
   end
 
   describe "#touch_in" do
@@ -50,14 +51,19 @@ describe OysterCard do
 
     it "sets in_journey? to be true" do
       subject.top_up(OysterCard::MINIMUM_BALANCE)
-      subject.touch_in
+      subject.touch_in(entry_station)
       expect(subject).to be_in_journey
     end
 
     it "raises an error if you re below the minimum fare" do
-      expect{ subject.touch_in }.to raise_error "Insufficient funds"
+      expect{ subject.touch_in(entry_station) }.to raise_error "Insufficient funds"
     end
 
+    it "remembers the entry station" do
+      subject.top_up(OysterCard::MINIMUM_BALANCE)
+      subject.touch_in(entry_station)
+      expect(subject.entry_station).to eq(entry_station)
+    end
   end
 
   describe "#touch_out" do
@@ -65,7 +71,7 @@ describe OysterCard do
 
     it "sets in_journey? to be false" do
       subject.top_up(OysterCard::MINIMUM_BALANCE)
-      subject.touch_in
+      subject.touch_in(entry_station)
       subject.touch_out
       expect(subject).not_to be_in_journey
     end
