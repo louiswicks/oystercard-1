@@ -14,10 +14,6 @@ class OysterCard
     self.balance += amount
   end
 
-  def deduct(amount)
-    self.balance -= amount
-  end
-
   def touch_in
     raise "Insufficient funds" if balance < MINIMUM_BALANCE
     self.in_use = true
@@ -25,6 +21,7 @@ class OysterCard
 
   def touch_out
     self.in_use = false
+    deduct(MINIMUM_BALANCE)
   end
 
   def in_journey?
@@ -37,5 +34,8 @@ private #-----------------------------
   attr_writer :balance
   attr_accessor :in_use
 
+  def deduct(amount)
+    self.balance -= amount
+  end
 
 end
