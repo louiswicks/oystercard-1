@@ -25,8 +25,6 @@ describe OysterCard do
     end
   end
 
-    # before(:context) { subject.top_up(OysterCard::MAXIMUM_BALANCE) }
-
       describe "card with maximum balance" do
 
       it "raises error if balance limit is reached" do
@@ -51,7 +49,7 @@ describe OysterCard do
 
     it { is_expected.to respond_to :touch_in }
 
-    it "sets in_journey? to be true" do
+    pending "sets in_journey? to be true" do
       subject.top_up(OysterCard::MINIMUM_BALANCE)
       subject.touch_in(entry_station)
       expect(subject).to be_in_journey
@@ -61,7 +59,7 @@ describe OysterCard do
       expect{ subject.touch_in(entry_station) }.to raise_error "Insufficient funds"
     end
 
-    it "remembers the entry station" do
+    pending "remembers the entry station" do
       subject.top_up(OysterCard::MINIMUM_BALANCE)
       subject.touch_in(entry_station)
       expect(subject.entry_station).to eq(entry_station)
@@ -71,7 +69,7 @@ describe OysterCard do
   describe "#touch_out" do
     it { is_expected.to respond_to :touch_out }
 
-    it "sets in_journey? to be false" do
+    pending "sets in_journey? to be false" do
       subject.top_up(OysterCard::MINIMUM_BALANCE)
       subject.touch_in(entry_station)
       subject.touch_out(exit_station)
@@ -81,9 +79,9 @@ describe OysterCard do
 
   describe "#in_journey?" do
 
-    it { is_expected.to respond_to :in_journey? }
+    pending { is_expected.to respond_to :in_journey? }
 
-    it "is initially not in a journey" do
+    pending "is initially not in a journey" do
       expect(subject).not_to be_in_journey
     end
   end
@@ -94,7 +92,7 @@ describe OysterCard do
       expect(subject.journeys).to be_empty
     end
 
-    it "records journeys" do
+    pending "records journeys" do
       subject.top_up(10)
       subject.touch_in(entry_station)
       subject.touch_out(exit_station)
