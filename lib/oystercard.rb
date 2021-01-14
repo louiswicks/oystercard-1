@@ -27,6 +27,7 @@ class OysterCard
     @journey = Journey.new if @journey == nil
     @journeys << @journey.finish(station)
     deduct(@journey.fare)
+    @journey == nil 
   end
 
 private #----------------------------
