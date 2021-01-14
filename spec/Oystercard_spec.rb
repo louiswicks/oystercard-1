@@ -49,54 +49,21 @@ describe OysterCard do
 
     it { is_expected.to respond_to :touch_in }
 
-    pending "sets in_journey? to be true" do
-      subject.top_up(OysterCard::MINIMUM_BALANCE)
-      subject.touch_in(entry_station)
-      expect(subject).to be_in_journey
-    end
-
     it "raises an error if you re below the minimum fare" do
       expect{ subject.touch_in(entry_station) }.to raise_error "Insufficient funds"
     end
 
-    pending "remembers the entry station" do
-      subject.top_up(OysterCard::MINIMUM_BALANCE)
-      subject.touch_in(entry_station)
-      expect(subject.entry_station).to eq(entry_station)
-    end
   end
 
   describe "#touch_out" do
     it { is_expected.to respond_to :touch_out }
 
-    pending "sets in_journey? to be false" do
-      subject.top_up(OysterCard::MINIMUM_BALANCE)
-      subject.touch_in(entry_station)
-      subject.touch_out(exit_station)
-      expect(subject).not_to be_in_journey
-    end
-  end
-
-  describe "#in_journey?" do
-
-    pending { is_expected.to respond_to :in_journey? }
-
-    pending "is initially not in a journey" do
-      expect(subject).not_to be_in_journey
-    end
   end
 
   describe "#journeys" do
 
     it "checks if journeys is empty" do
       expect(subject.journeys).to be_empty
-    end
-
-    pending "records journeys" do
-      subject.top_up(10)
-      subject.touch_in(entry_station)
-      subject.touch_out(exit_station)
-      expect(subject.journeys).to include journey
     end
 
   end
