@@ -1,41 +1,43 @@
-class Oystercard
+require_relative 'station'
+require_relative 'journey'
+
+class OysterCard
 
   MAXIMUM_BALANCE = 90
-  attr_reader :balance
+  MINIMUM_BALANCE = 1
+  attr_reader :balance, :journeys, :journey
 
   def initialize
     @balance = 0
-    @in_use = false
+    @journeys = Array.new
   end
 
   def top_up(amount)
     fail "Unable to top up as it would exceed balance limit (£#{MAXIMUM_BALANCE})" if (self.balance + amount) > MAXIMUM_BALANCE
-
-    self.balance += amount
+    @balance += amount
   end
+
+  def touch_in(station)
+    touch_out(nil) if @journey != nil
+    raise "Insufficient funds" if balance < MINIMUM_BALANCE
+    @journey = Journey.new(station)
+  end
+
+  def touch_out(station)
+    @journey = Journey.new if @journey == nil
+    @journeys << @journey.finish(station)
+    complete_journey
+  end
+
+  def complete_journey
+    deduct(@journey.fare)
+    @journey == nil
+  end
+
+private #----------------------------
 
   def deduct(amount)
-    self.balance -= amount
+    @balance -= amount
   end
-
-  def touch_in
-    fail "Insufficient funds" if balance < 1
-    self.in_use = true
-  end
-
-  def touch_out
-    self.in_use = false
-  end
-
-  def in_journey?
-    in_use
-  end
-
-
-private #-----------------------------
-
-  attr_writer :balance
-  attr_accessor :in_use
-
 
 end

@@ -1,6 +1,10 @@
 require "oystercard"
 
-describe Oystercard do
+describe OysterCard do
+
+  let(:entry_station) {double :station}
+  let(:exit_station) {double :station}
+  let(:journey) {{:entry_station => entry_station, :exit_station => exit_station}}
 
   describe "#balance" do
 
@@ -21,13 +25,11 @@ describe Oystercard do
     end
   end
 
-    # before(:context) { subject.top_up(Oystercard::MAXIMUM_BALANCE) }
-
       describe "card with maximum balance" do
 
       it "raises error if balance limit is reached" do
-        subject.top_up(Oystercard::MAXIMUM_BALANCE)
-        expect { subject.top_up(1) }.to raise_error "Unable to top up as it would exceed balance limit (£#{Oystercard::MAXIMUM_BALANCE})"
+        subject.top_up(OysterCard::MAXIMUM_BALANCE)
+        expect { subject.top_up(OysterCard::MINIMUM_BALANCE) }.to raise_error "Unable to top up as it would exceed balance limit (£#{OysterCard::MAXIMUM_BALANCE})"
       end
      end
 
@@ -36,12 +38,10 @@ describe Oystercard do
 
   describe '#deduct' do
 
-    it {is_expected.to respond_to(:deduct).with(1).arguments}
-
-    it "decreases balance" do
-      # subject.top_up(10)
-      deduction_amount = 1
-      expect{ subject.deduct(deduction_amount) }.to change{ subject.balance }.by(-deduction_amount)
+    it "decreases balance by MINIMUM_BALANCE" do
+      subject.top_up(10)
+      subject.touch_in(entry_station)
+      expect { subject.touch_out(exit_station) }.to change { subject.balance }.by(-OysterCard::MINIMUM_BALANCE)
     end
   end
 
@@ -49,14 +49,12 @@ describe Oystercard do
 
     it { is_expected.to respond_to :touch_in }
 
-    it "sets in_journey? to be true" do
-      subject.top_up(10)
-      subject.touch_in
-      expect(subject).to be_in_journey
+    it "raises an error if you re below the minimum fare" do
+      expect{ subject.touch_in(entry_station) }.to raise_error "Insufficient funds"
     end
 
   it "raises error if insufficient balance" do
-    expect { subject.touch_in }.to raise_error "Insufficient funds"
+    expect { subject.touch_in(entry_station) }.to raise_error "Insufficient funds"
   end
 
 
@@ -65,21 +63,14 @@ describe Oystercard do
   describe "#touch_out" do
     it { is_expected.to respond_to :touch_out }
 
-    it "sets in_journey? to be false" do
-      subject.top_up(10)
-      subject.touch_in
-      subject.touch_out
-      expect(subject).not_to be_in_journey
-    end
   end
 
-  describe "#in_journey?" do
+  describe "#journeys" do
 
-    it { is_expected.to respond_to :in_journey? }
-
-    it "is initially not in a journey" do
-      expect(subject).not_to be_in_journey
+    it "checks if journeys is empty" do
+      expect(subject.journeys).to be_empty
     end
+
   end
 
 end
